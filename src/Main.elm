@@ -3,7 +3,6 @@ module Main exposing (Model, Msg, update, view, init)
 import Html exposing (..)
 import Browser
 
-
 type alias Model = {}
 
 init : Model
@@ -19,7 +18,6 @@ update msg model =
 
     Msg2 ->
       model
-
 
 view : Model -> Html Msg
 view model =
