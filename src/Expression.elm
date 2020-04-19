@@ -1,12 +1,15 @@
 module Expression exposing
   (
-    Constant(..),
-    Unary(..),
-    Binary(..),
-    Function(..),
-    Expression(..),
+    Expression,
+    fromNumber,
+    pi, e,
+    pos, neg,
+    add, sub, mul, div, pow,
+    sin, cos, tan, abs, sgn, rnd, ln, lg, sqrt,
     solve
   )
+
+import Basics
 
 type Constant
   = PI
@@ -22,9 +25,9 @@ type Binary
   | Pow
 
 type Function
-  = Sin | Cos  | Tan
-  | Abs | Sgn  | Rnd
-  | Log | Sqrt | Log10
+  = Sin | Cos | Tan
+  | Abs | Sgn | Rnd
+  | Ln  | Lg  | Sqrt
 
 type Expression
   = Number Float
@@ -36,8 +39,8 @@ type Expression
 cFloat : Constant -> Float
 cFloat c =
   case c of
-    PI -> pi
-    E -> e
+    PI -> Basics.pi
+    E -> Basics.e
 
 uFunc : Unary -> Float -> Float
 uFunc u =
@@ -57,15 +60,72 @@ bFunc b =
 fFunc : Function -> Float -> Float
 fFunc f =
   case f of
-    Sin   -> sin
-    Cos   -> cos
-    Tan   -> tan
-    Abs   -> abs
-    Sgn   -> \x -> if x == 0 then 0 else if x < 0 then -1 else 1
-    Rnd   -> round >> toFloat
-    Log   -> logBase e
-    Sqrt  -> sqrt
-    Log10 -> logBase 10
+    Sin  -> Basics.sin
+    Cos  -> Basics.cos
+    Tan  -> Basics.tan
+    Abs  -> Basics.abs
+    Sgn  -> \x -> if x == 0 then 0 else if x < 0 then -1 else 1
+    Rnd  -> round >> toFloat
+    Ln   -> logBase Basics.e
+    Sqrt -> Basics.sqrt
+    Lg   -> logBase 10
+
+fromNumber : Float -> Expression
+fromNumber = Number
+
+pi : Expression
+pi = Constant PI
+
+e : Expression
+e = Constant E
+
+pos : Expression -> Expression
+pos = Unary Plus
+
+neg : Expression -> Expression
+neg = Unary Minus
+
+add : Expression -> Expression -> Expression
+add = Binary Add
+
+sub : Expression -> Expression -> Expression
+sub = Binary Sub
+
+mul : Expression -> Expression -> Expression
+mul = Binary Mul
+
+div : Expression -> Expression -> Expression
+div = Binary Div
+
+pow : Expression -> Expression -> Expression
+pow = Binary Pow
+
+sin : Expression -> Expression
+sin = Function Sin
+
+cos : Expression -> Expression
+cos = Function Cos
+
+tan : Expression -> Expression
+tan = Function Tan
+
+abs : Expression -> Expression
+abs = Function Abs
+
+sgn : Expression -> Expression
+sgn = Function Sgn
+
+rnd : Expression -> Expression
+rnd = Function Rnd
+
+ln : Expression -> Expression
+ln = Function Ln
+
+sqrt : Expression -> Expression
+sqrt = Function Sqrt
+
+lg : Expression -> Expression
+lg = Function Lg
 
 solve : Expression -> Float
 solve x =
