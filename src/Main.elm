@@ -23,20 +23,12 @@ type Msg = Change String
 
 handleInput : String -> String
 handleInput i =
-  let
-    toString : Parser.DeadEnd -> String
-    toString x = "Error at position: " ++ String.fromInt x.col
-  in
   case ExpressionParser.run i of
     Ok e ->
-      e
-      |> Expression.solve
-      |> String.fromFloat
+      String.fromFloat <| Expression.solve e
 
     Err dl ->
-      dl
-      |> List.map toString
-      |> List.foldl (\x y -> x ++ "\n" ++ y) ""
+      Parser.deadEndsToString dl
 
 update : Msg -> Model -> Model
 update msg model =
