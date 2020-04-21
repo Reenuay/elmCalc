@@ -4,7 +4,6 @@ import Html exposing (Html, div, input, text)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onInput)
 import Browser
-import Parser
 import Expression
 import ExpressionParser
 
@@ -27,8 +26,8 @@ handleInput i =
     Ok e ->
       String.fromFloat <| Expression.solve e
 
-    Err dl ->
-      Parser.deadEndsToString dl
+    Err _ ->
+      "Error"
 
 update : Msg -> Model -> Model
 update msg model =

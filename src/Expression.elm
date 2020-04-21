@@ -67,8 +67,8 @@ fFunc f =
     Sgn  -> \x -> if x == 0 then 0 else if x < 0 then -1 else 1
     Rnd  -> round >> toFloat
     Ln   -> logBase Basics.e
-    Sqrt -> Basics.sqrt
     Lg   -> logBase 10
+    Sqrt -> Basics.sqrt
 
 fromNumber : Float -> Expression
 fromNumber = Number
@@ -121,11 +121,11 @@ rnd = Function Rnd
 ln : Expression -> Expression
 ln = Function Ln
 
-sqrt : Expression -> Expression
-sqrt = Function Sqrt
-
 lg : Expression -> Expression
 lg = Function Lg
+
+sqrt : Expression -> Expression
+sqrt = Function Sqrt
 
 solve : Expression -> Float
 solve x =

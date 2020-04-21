@@ -11,8 +11,15 @@ parenthesizedExpression config =
     |= Pratt.subExpression 6 config
     |. symbol ")"
 
-expression : Parser Expression
-expression =
+funcExpression : String -> (Expression -> Expression) -> Pratt.Config Expression -> Parser Expression
+funcExpression name func config =
+  Parser.succeed identity
+    |. keyword name
+    |= parenthesizedExpression config
+    |> Parser.map (\x -> func x)
+
+operatorExpression : Parser Expression
+operatorExpression =
   Pratt.expression
     {
       oneOf =
@@ -22,7 +29,15 @@ expression =
           constant (keyword "e") Expression.e,
           prefix 3 (symbol "+") Expression.pos,
           prefix 3 (symbol "-") Expression.neg,
-          prefix 5 (keyword "sin") Expression.sin,
+          funcExpression "sin" Expression.sin,
+          funcExpression "cos" Expression.cos,
+          funcExpression "tan" Expression.tan,
+          funcExpression "abs" Expression.abs,
+          funcExpression "sgn" Expression.sgn,
+          funcExpression "rnd" Expression.rnd,
+          funcExpression "ln" Expression.ln,
+          funcExpression "lg" Expression.lg,
+          funcExpression "sqrt" Expression.sqrt,
           parenthesizedExpression
         ],
       andThenOneOf =
@@ -35,6 +50,12 @@ expression =
         ],
       spaces = Parser.spaces
     }
+
+expression : Parser Expression
+expression =
+  Parser.succeed identity
+    |= operatorExpression
+    |. Parser.end
 
 run : String -> Result (List Parser.DeadEnd) Expression
 run = Parser.run expression
