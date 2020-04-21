@@ -1,22 +1,21 @@
 module ExpressionParser exposing (run)
 
 import Parser exposing (Parser, (|.), (|=), float, keyword, symbol)
-import Pratt exposing (constant, infixLeft, infixRight, literal, prefix)
+import Pratt exposing (Config, constant, infixLeft, infixRight, literal, prefix)
 import Expression exposing (Expression)
 
-parenthesizedExpression : Pratt.Config Expression -> Parser Expression
+parenthesizedExpression : Config Expression -> Parser Expression
 parenthesizedExpression config =
   Parser.succeed identity
     |. symbol "("
     |= Pratt.subExpression 6 config
     |. symbol ")"
 
-funcExpression : String -> (Expression -> Expression) -> Pratt.Config Expression -> Parser Expression
+funcExpression : String -> (Expression -> Expression) -> Config Expression -> Parser Expression
 funcExpression name func config =
-  Parser.succeed identity
+  Parser.succeed func
     |. keyword name
     |= parenthesizedExpression config
-    |> Parser.map (\x -> func x)
 
 operatorExpression : Parser Expression
 operatorExpression =
