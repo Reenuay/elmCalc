@@ -1,6 +1,6 @@
 module ExpressionParser exposing (run)
 
-import Parser exposing (Parser, (|.), (|=), float, keyword, symbol)
+import Parser exposing (Parser, DeadEnd, (|.), (|=), float, keyword, symbol)
 import Pratt exposing (Config, constant, infixLeft, infixRight, literal, prefix)
 import Expression exposing (Expression)
 
@@ -23,19 +23,19 @@ operatorExpression =
     {
       oneOf =
         [
-          literal (Parser.map Expression.fromNumber float),
-          constant (keyword "pi") Expression.pi,
-          constant (keyword "e") Expression.e,
           prefix 3 (symbol "+") Expression.pos,
           prefix 3 (symbol "-") Expression.neg,
+          constant (keyword "pi") Expression.pi,
+          constant (keyword "e") Expression.e,
+          literal (Parser.map Expression.fromNumber float),
+          funcExpression "ln" Expression.ln,
+          funcExpression "lg" Expression.lg,
           funcExpression "sin" Expression.sin,
           funcExpression "cos" Expression.cos,
           funcExpression "tan" Expression.tan,
           funcExpression "abs" Expression.abs,
           funcExpression "sgn" Expression.sgn,
           funcExpression "rnd" Expression.rnd,
-          funcExpression "ln" Expression.ln,
-          funcExpression "lg" Expression.lg,
           funcExpression "sqrt" Expression.sqrt,
           parenthesizedExpression
         ],
@@ -56,5 +56,5 @@ expression =
     |= operatorExpression
     |. Parser.end
 
-run : String -> Result (List Parser.DeadEnd) Expression
+run : String -> Result (List DeadEnd) Expression
 run = Parser.run expression
