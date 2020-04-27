@@ -8,7 +8,7 @@ parenthesizedExpression : Config Expression -> Parser Expression
 parenthesizedExpression config =
   Parser.succeed identity
     |. symbol "("
-    |= Pratt.subExpression 6 config
+    |= Pratt.subExpression 0 config
     |. symbol ")"
 
 funcExpression : String -> (Expression -> Expression) -> Config Expression -> Parser Expression
